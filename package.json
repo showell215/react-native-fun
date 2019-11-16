@@ -1,0 +1,30 @@
+{
+  "name": "testProject",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "start:server": "node server/index.js",
+    "serve:ios": "react-native run-ios",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@mapbox/polyline": "^1.1.0",
+    "express": "^4.17.1",
+    "got": "^9.6.0",
+    "react": "^16.8.3",
+    "react-native": "^0.59.0",
+    "react-native-maps": "*"
+  },
+  "devDependencies": {
+    "@babel/core": "7.4.5",
+    "@babel/runtime": "7.4.5",
+    "babel-jest": "24.8.0",
+    "jest": "24.8.0",
+    "metro-react-native-babel-preset": "0.54.1",
+    "react-test-renderer": "16.8.3"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
