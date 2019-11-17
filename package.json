@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "start:server": "node server/index.js",
+    "start:server": "DEBUG=express:* node server/index.js",
     "serve:ios": "react-native run-ios",
     "test": "jest"
   },
