@@ -4,6 +4,8 @@ Just me playing around with React Native with the Google Maps and MapBox APIs.
 
 ## To run
 
+Set gmaps API key
+
 `npm run start:server`
 => starts Express server
 
@@ -11,6 +13,13 @@ Just me playing around with React Native with the Google Maps and MapBox APIs.
 => opens xCode simulator for iPhone
 => opens terminal running the Metro Bundler
 => terminal used to run npm stops and hands off to new terminal
+
+### To simulate Location route
+`npm run serve ios`
+Open XCode project
+Set destination to appropriate Simulator or Device
+Start Xcode build
+In XCode, `Debug -> Simulate location`
 
 ## Notes
 
@@ -46,3 +55,5 @@ Update line as user's position moves - https://facebook.github.io/react-native/d
 Add waypoints - `waypoints` parameter from GMaps - https://developers.google.com/maps/documentation/directions/intro#TravelModes
 
 Array of "points of interest" with labels and names
+
+Schema for waypoint and waypoint set
