@@ -57,3 +57,5 @@ Add waypoints - `waypoints` parameter from GMaps - https://developers.google.com
 Array of "points of interest" with labels and names
 
 Schema for waypoint and waypoint set
+
+**Send all waypoints in a single array

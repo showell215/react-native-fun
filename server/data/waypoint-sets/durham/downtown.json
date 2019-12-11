@@ -1,32 +1,35 @@
 {
   "metadata": {
     "name": "Downtown Durham example walking route",
+    "lang": "en",
     "createdDate": "2019-11-17T15:32:44.857Z",
     "modifiedDate": "2019-11-17T15:32:44.857Z",
     "version": 1
   },
-  "start": {
-    "name": "Steven's house",
-    "latitude": "35.987234",
-    "longitude": "-78.903875"
-  },
-  "end": {
-    "name": "Durham Performing Arts Center",
-    "latitude": "35.993450",
-    "longitude": "-78.902852"
-  },
   "waypoints": [
     {
       "id": 0,
+      "name": "Steven's house",
+      "latitude": "35.987234",
+      "longitude": "-78.903875"
+    },
+    {
+      "id": 1,
       "name": "Durham Bulls Athletic Park",
       "latitude": "35.991514",
       "longitude": "-78.905486"
     },
     {
-      "id": 1,
+      "id": 2,
       "name": "American Tobacco Campus",
       "latitude": "35.991579",
       "longitude": "-78.906130"
+    },
+    {
+      "id": 3,
+      "name": "Durham Performing Arts Center",
+      "latitude": "35.993450",
+      "longitude": "-78.902852"
     }
   ]
 }

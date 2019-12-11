@@ -5,6 +5,11 @@ import MapView, { Marker, Polyline } from "react-native-maps";
 import haversine from "haversine";
 
 const SERVER_HOST = "http://localhost:3000";
+const MarkerColors = {
+  ORIGIN: "#2ab850",
+  DESTINATION: "#f00726",
+  WAYPOINT: "#103fcc"
+};
 
 class RouteView extends Component {
   constructor(props) {
@@ -17,7 +22,7 @@ class RouteView extends Component {
       route: null,
       error: null,
       isLocationSet: false,
-      isMapReady: true // TODO set this dynamically from onMapReady fn
+
     };
   }
   componentDidMount() {
@@ -25,7 +30,13 @@ class RouteView extends Component {
       position => {
         const { latitude, longitude } = position.coords;
 
-        console.log("NEW POSITION", latitude, longitude);
+        const waypointWithinThreshold = this.state.route && this.state.route.waypoints.find(waypoint => {
+            const distance = haversine( { latitude, longitude }, { latitude: waypoint.latitude, longitude: waypoint.longitude }, { unit: 'meter'});
+
+            // console.log(distance);
+            return distance < 20;
+        });
+        waypointWithinThreshold && console.log('Within 20m of waypoint', waypointWithinThreshold);
       },
       () => {},
       { distanceFilter: 10 }
@@ -39,7 +50,6 @@ class RouteView extends Component {
         this.setState({
           userLatitude: position.coords.latitude,
           userLongitude: position.coords.longitude,
-          error: null,
           isLocationSet: true
         });
         this.getDirections();
@@ -53,12 +63,13 @@ class RouteView extends Component {
     navigator.geolocation.clearWatch(this.watchID);
   }
 
-  onMapReady = () => {
-    console.log("map is ready");
-    this.setState({
-      isMapReady: true
-    });
-  };
+
+  // onMapReady = () => {
+  //   console.log("map is ready");
+  //   this.setState({
+  //     isMapReady: true
+  //   });
+  // };
 
   async getDirections() {
     try {
@@ -94,44 +105,36 @@ class RouteView extends Component {
     return this.state.isLocationSet ? (
       <MapView
         showsUserLocation={true}
-        onMapReady={this.onMapReady}
+        // onMapReady={this.onMapReady}
         style={{
           ...styles.map,
-          display: this.state.isMapReady ? "flex" : "none"
         }}
         initialRegion={{
           latitude: Number(userLatitude),
           longitude: Number(userLongitude),
-          latitudeDelta: 0.015,
-          longitudeDelta: 0.015
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005
         }}
       >
         {route && (
           <>
-            <Marker
-              coordinate={{
-                latitude: Number(route.start.latitude),
-                longitude: Number(route.start.longitude)
-              }}
-              title={route.start.name}
-            />
-            <Marker
-              coordinate={{
-                latitude: Number(route.end.latitude),
-                longitude: Number(route.end.longitude)
-              }}
-              title={route.end.name}
-            />
-            {route.waypoints.map(waypoint => (
-              <Marker
-                key={waypoint.id}
-                coordinate={{
-                  latitude: Number(waypoint.latitude),
-                  longitude: Number(waypoint.longitude)
-                }}
-                title={waypoint.name}
-              />
-            ))}
+            {route.waypoints.map((waypoint, idx) => (
+                <Marker
+                  pinColor={
+                    idx === 0
+                      ? MarkerColors.ORIGIN
+                      : idx === route.waypoints.length - 1
+                      ? MarkerColors.DESTINATION
+                      : MarkerColors.WAYPOINT
+                  }
+                  key={waypoint.id}
+                  coordinate={{
+                    latitude: Number(waypoint.latitude),
+                    longitude: Number(waypoint.longitude)
+                  }}
+                  title={waypoint.name}
+                />
+              ))}
             <Polyline
               coordinates={this.state.routeCoordinates}
               strokeWidth={3}

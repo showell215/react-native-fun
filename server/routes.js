@@ -9,7 +9,11 @@ let cachedDirectionsResponse;
 router.get("/directions", async (req, res) => {
   // for now just get a static json file containing an example route
 
-  const route = exampleRoute;
+  const route = Object.assign({}, exampleRoute),
+    waypoints = route.waypoints.slice();
+    start = waypoints.shift(),
+    end = waypoints.pop();
+
   // timeout to test loading screen on UI
   // await new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -28,14 +32,14 @@ router.get("/directions", async (req, res) => {
           json: true,
           query: {
             key: process.env.GMAPS_API_KEY,
-            origin: `${route.start.latitude},${route.start.longitude}`,
-            destination: `${route.end.latitude},${route.end.longitude}`,
+            origin: `${start.latitude},${start.longitude}`,
+            destination: `${end.latitude},${end.longitude}`,
             mode: DIRECTIONS_MODE,
-            waypoints: route.waypoints.reduce((prev, cur, index) => {
+            waypoints: waypoints.reduce((prev, cur, index) => {
               return (
                 // TODO: make this a function
                 prev +
-                (index > 0 && index < route.waypoints.length ? "|" : "") +
+                (index > 0 && index < waypoints.length ? "|" : "") +
                 `${cur.latitude},${cur.longitude}`
               );
             }, "")
