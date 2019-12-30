@@ -21,39 +21,21 @@ class RouteView extends Component {
       routeCoordinates: [],
       route: null,
       error: null,
-      isLocationSet: false,
-
+      isLocationSet: false
     };
   }
+
   componentDidMount() {
     this.watchID = navigator.geolocation.watchPosition(
-      position => {
-        const { latitude, longitude } = position.coords;
-
-        const waypointWithinThreshold = this.state.route && this.state.route.waypoints.find(waypoint => {
-            const distance = haversine( { latitude, longitude }, { latitude: waypoint.latitude, longitude: waypoint.longitude }, { unit: 'meter'});
-
-            // console.log(distance);
-            return distance < 20;
-        });
-        waypointWithinThreshold && console.log('Within 20m of waypoint', waypointWithinThreshold);
-      },
+      this.handlePositionUpdate,
       () => {},
       { distanceFilter: 10 }
     );
   }
 
   componentWillMount() {
-    console.log("component will mount. State is", this.state);
     navigator.geolocation.getCurrentPosition(
-      position => {
-        this.setState({
-          userLatitude: position.coords.latitude,
-          userLongitude: position.coords.longitude,
-          isLocationSet: true
-        });
-        this.getDirections();
-      },
+      this.handleInitialPosition,
       error => this.setState({ error: error.message }),
       { enableHighAccuracy: false, timeout: 200000, maximumAge: 1000 }
     );
@@ -63,15 +45,34 @@ class RouteView extends Component {
     navigator.geolocation.clearWatch(this.watchID);
   }
 
+  handleInitialPosition = position => {
+    this.setState({
+      userLatitude: position.coords.latitude,
+      userLongitude: position.coords.longitude,
+      isLocationSet: true
+    });
+    this.getDirections();
+  };
 
-  // onMapReady = () => {
-  //   console.log("map is ready");
-  //   this.setState({
-  //     isMapReady: true
-  //   });
-  // };
+  handlePositionUpdate = position => {
+    const { latitude, longitude } = position.coords;
 
-  async getDirections() {
+    const waypointWithinThreshold =
+      this.state.route &&
+      this.state.route.waypoints.find(waypoint => {
+        const distance = haversine(
+          { latitude, longitude },
+          { latitude: waypoint.latitude, longitude: waypoint.longitude },
+          { unit: "meter" }
+        );
+
+        return distance < 20;
+      });
+    waypointWithinThreshold &&
+      console.log("Within 20m of waypoint", waypointWithinThreshold);
+  };
+
+  getDirections = async () => {
     try {
       const resp = await fetch(`${SERVER_HOST}/api/directions`);
       const { directions, route, errMessage } = await resp.json();
@@ -97,44 +98,52 @@ class RouteView extends Component {
       console.error(error);
       alert("check the console, dummy");
     }
-  }
+  };
 
   render() {
     const { userLatitude, userLongitude, route } = this.state;
 
     return this.state.isLocationSet ? (
       <MapView
-        showsUserLocation={true}
-        // onMapReady={this.onMapReady}
-        style={{
-          ...styles.map,
+        mapType="mutedStandard"
+        followsUserLocation
+        showsUserLocation
+        showsMyLocationButton={false}
+        showsTraffic={false}
+        loadingEnabled
+        camera={{
+          center: {
+            latitude: userLatitude,
+            longitude: userLongitude
+          },
+          pitch: 0,
+          heading: 0,
+          altitude: 1000,
+          zoom: 50
         }}
-        initialRegion={{
-          latitude: Number(userLatitude),
-          longitude: Number(userLongitude),
-          latitudeDelta: 0.005,
-          longitudeDelta: 0.005
+        style={{
+          ...styles.map
         }}
       >
         {route && (
           <>
             {route.waypoints.map((waypoint, idx) => (
-                <Marker
-                  pinColor={
-                    idx === 0
-                      ? MarkerColors.ORIGIN
-                      : idx === route.waypoints.length - 1
-                      ? MarkerColors.DESTINATION
-                      : MarkerColors.WAYPOINT
-                  }
-                  key={waypoint.id}
-                  coordinate={{
-                    latitude: Number(waypoint.latitude),
-                    longitude: Number(waypoint.longitude)
-                  }}
-                  title={waypoint.name}
-                />
-              ))}
+              <Marker
+                pinColor={
+                  idx === 0
+                    ? MarkerColors.ORIGIN
+                    : idx === route.waypoints.length - 1
+                    ? MarkerColors.DESTINATION
+                    : MarkerColors.WAYPOINT
+                }
+                key={waypoint.id}
+                coordinate={{
+                  latitude: Number(waypoint.latitude),
+                  longitude: Number(waypoint.longitude)
+                }}
+                title={waypoint.name}
+              />
+            ))}
             <Polyline
               coordinates={this.state.routeCoordinates}
               strokeWidth={3}
@@ -152,21 +161,16 @@ class RouteView extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    position: "absolute",
+  map: {
+    position: "relative",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    justifyContent: "flex-end",
-    alignItems: "center"
-  },
-  map: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0
+    height: '50%',
+    borderColor: 'blue',
+    borderStyle: 'solid',
+    borderWidth: 4,
   }
 });
 

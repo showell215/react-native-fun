@@ -19,10 +19,21 @@ const instructions = Platform.select({
 
 // type Props = {};
 export default class App extends Component {
+  state = {
+    count: 0
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <RouteView />
+        <View style={styles.textView}>
+          <Text>Some info about the next stop</Text>
+          <Text>{this.state.count}</Text>
+          <Button title='Increase' onPress={() => this.setState({count: this.state.count + 1})}></Button>
+        </View>
+        <RouteView style={styles.routeView} />
+        {/* <View style={{width: '100%', height: '50%', backgroundColor: 'blue'}}></View> */}
+        {/* <View style={{width: '100%', height: '50%', backgroundColor: 'red'}}></View> */}
       </View>
     );
   }
@@ -30,19 +41,31 @@ export default class App extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#B000B5"
+    width: '100%',
+    height: '100%'
+    // flex: 1,
+    // justifyContent: "center",
+    // alignItems: "center",
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: "center",
-    margin: 10
+  textView: {
+    // border: '2px solid blue',
+    borderColor: 'blue',
+    borderStyle: 'solid',
+    borderWidth: 4,
+    padding: 50,
+    height: '50%',
+    width: '100%',
+    backgroundColor: 'transparent'
+    // flex: 1
   },
-  instructions: {
-    textAlign: "center",
-    color: "#333333",
-    marginBottom: 5
+  routeView: {
+    borderColor: 'red',
+    borderStyle: 'solid',
+    borderWidth: 4,
+    // border: '2px solid blue',
+    position: "relative",
+    // flex: 1
+    height: '50%',
+    width: '100%'
   }
 });
