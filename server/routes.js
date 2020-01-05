@@ -52,6 +52,7 @@ router.get("/directions", async (req, res) => {
       }
 
       cachedDirectionsResponse = response;
+      require('fs').writeFileSync('polylinedata.json', JSON.stringify(response.body));
     }
 
     return res.status(200).json({

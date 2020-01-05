@@ -50,12 +50,13 @@ Hey dummy, you saved a bunch of tabs in your bookmarks related to this project.
 
 Trigger something when user reaches a waypoint
 
-Update line as user's position moves - https://facebook.github.io/react-native/docs/geolocation.html#watchposition
+Use `polylines` from each step object for better accuracy
+- `.legs` represents waypoints
+- `legs.steps` represents steps in tha waypoint
+- `legs.steps.polyline.points` has the polyline
 
-Add waypoints - `waypoints` parameter from GMaps - https://developers.google.com/maps/documentation/directions/intro#TravelModes
 
-Array of "points of interest" with labels and names
-
-Schema for waypoint and waypoint set
-
-**Send all waypoints in a single array
+Display info for current leg and next leg
+    For each step in the leg, display next step
+    When user reaches within 2m of step dest, go to next step
+When use reaches within 5m of leg destination, go to next
